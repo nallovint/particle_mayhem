@@ -20,6 +20,7 @@ let particles = [];
 let started = false;
 let startText;
 let gameScene;
+let counterText;
 
 class Particle {
     constructor(scene, x, y, velocity, color) {
@@ -60,6 +61,12 @@ function preload() {
 
 function create() {
     gameScene = this;
+    counterText = this.add.text(10, 10, 'Particles: 0', {
+        font: '24px Arial',
+        fill: '#fff',
+        stroke: '#000',
+        strokeThickness: 4
+    }).setOrigin(0, 0).setDepth(1000);
     startText = this.add.text(400, 300, 'Click to Start', {
         font: '32px Arial',
         fill: '#fff',
@@ -80,7 +87,11 @@ function create() {
 }
 
 function update() {
-    if (!started) return;
+    if (!started) {
+        if (counterText) counterText.setText('Particles: 0');
+        return;
+    }
+    if (counterText) counterText.setText('Particles: ' + particles.length);
     for (const p of particles) {
         p.update();
     }
