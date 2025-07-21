@@ -17,6 +17,9 @@ const config = {
 };
 
 let particles = [];
+let bounceSound;
+let started = false;
+let startText;
 
 class Particle {
     constructor(scene, x, y, velocity, color) {
@@ -36,6 +39,10 @@ class Particle {
         const now = this.scene.time.now;
         if ((body.blocked.left || body.blocked.right || body.blocked.up || body.blocked.down) && now - this.lastBounceTime > this.bounceCooldown) {
             this.lastBounceTime = now;
+            if (bounceSound && started) {
+                bounceSound.setRate(Phaser.Math.FloatBetween(0.9, 1.1));
+                bounceSound.play();
+            }
             for (let i = 0; i < 2; i++) {
                 const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
                 const speed = Phaser.Math.Between(120, 200);
@@ -48,18 +55,33 @@ class Particle {
     }
 }
 
-function preload() {}
+function preload() {
+    this.load.audio('bounce', 'pickupCoin.wav');
+}
 
 function create() {
-    const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
-    const speed = Phaser.Math.Between(120, 200);
-    const vx = Math.cos(angle) * speed;
-    const vy = Math.sin(angle) * speed;
-    const color = Phaser.Display.Color.RandomRGB().color;
-    particles.push(new Particle(this, 400, 300, { x: vx, y: vy }, color));
+    bounceSound = this.sound.add('bounce');
+    startText = this.add.text(400, 300, 'Click to Start', {
+        font: '32px Arial',
+        fill: '#fff',
+        backgroundColor: '#000',
+        padding: { x: 20, y: 10 },
+        align: 'center'
+    }).setOrigin(0.5);
+    this.input.once('pointerdown', () => {
+        startText.setVisible(false);
+        started = true;
+        const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
+        const speed = Phaser.Math.Between(120, 200);
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+        const color = Phaser.Display.Color.RandomRGB().color;
+        particles.push(new Particle(this, 400, 300, { x: vx, y: vy }, color));
+    });
 }
 
 function update() {
+    if (!started) return;
     for (const p of particles) {
         p.update();
     }
