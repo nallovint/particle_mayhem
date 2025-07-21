@@ -5,16 +5,16 @@ A simple Phaser 3 experiment: one particle bounces around the screen, doubling i
 ## Setup
 
 1. Install dependencies:
-   ```
+```
 npm install
-   ```
+```
 
 2. Add your `pickupCoin.wav` sound file to the `src/` directory (or use the provided one).
 
 3. Start the local server:
-   ```
+```
 npm start
-   ```
+```
 
 4. Open your browser to the provided local URL (usually http://localhost:3000).
 

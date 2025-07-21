@@ -21,6 +21,8 @@ let started = false;
 let startText;
 let gameScene;
 let counterText;
+const MAX_PARTICLES = 20000;
+let stopped = false;
 
 class Particle {
     constructor(scene, x, y, velocity, color) {
@@ -91,7 +93,20 @@ function update() {
         if (counterText) counterText.setText('Particles: 0');
         return;
     }
+    if (stopped) return;
     if (counterText) counterText.setText('Particles: ' + particles.length);
+    if (particles.length >= MAX_PARTICLES) {
+        stopped = true;
+        if (gameScene) {
+            gameScene.add.text(400, 200, 'Simulation stopped at 20,000 particles', {
+                font: '32px Arial',
+                fill: '#fff',
+                stroke: '#000',
+                strokeThickness: 6
+            }).setOrigin(0.5).setDepth(1001);
+        }
+        return;
+    }
     for (const p of particles) {
         p.update();
     }
