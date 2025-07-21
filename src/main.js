@@ -17,9 +17,9 @@ const config = {
 };
 
 let particles = [];
-let bounceSound;
 let started = false;
 let startText;
+let gameScene;
 
 class Particle {
     constructor(scene, x, y, velocity, color) {
@@ -39,9 +39,8 @@ class Particle {
         const now = this.scene.time.now;
         if ((body.blocked.left || body.blocked.right || body.blocked.up || body.blocked.down) && now - this.lastBounceTime > this.bounceCooldown) {
             this.lastBounceTime = now;
-            if (bounceSound && started) {
-                bounceSound.setRate(Phaser.Math.FloatBetween(0.9, 1.1));
-                bounceSound.play();
+            if (started && gameScene) {
+                gameScene.sound.play('bounce', { rate: Phaser.Math.FloatBetween(0.9, 1.1) });
             }
             for (let i = 0; i < 2; i++) {
                 const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
@@ -60,7 +59,7 @@ function preload() {
 }
 
 function create() {
-    bounceSound = this.sound.add('bounce');
+    gameScene = this;
     startText = this.add.text(400, 300, 'Click to Start', {
         font: '32px Arial',
         fill: '#fff',
